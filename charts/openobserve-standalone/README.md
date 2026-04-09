@@ -164,3 +164,15 @@ To uninstall
 ```shell
 helm -n openobserve uninstall o2 .
 ```
+
+
+## 설치
+```bash
+# dev 환경 예시
+$ helm dependency update
+$ helm upgrade --install openobserve . \
+  -n openobserve-dev --create-namespace \
+  -f values.yaml \
+  -f values-dev.yaml \
+  --wait --atomic
+```

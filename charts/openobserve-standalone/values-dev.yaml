@@ -1,0 +1,41 @@
+common:
+  containerPort: &containerPort "5080"
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: "gp3-xfs"
+
+
+
+service:
+  type: ClusterIP
+  # type: LoadBalancer
+  http_port: *containerPort
+  # http_nodePort: 30580
+  grpc_port: 5081
+  # grpc_nodePort: 30581
+  annotations: {}
+
+ingress:
+  enabled: true
+  className: "alb"
+  annotations:
+    "alb.ingress.kubernetes.io/group.name": "default-alb"
+    "alb.ingress.kubernetes.io/group.order": "21"
+    "alb.ingress.kubernetes.io/listen-ports": "[{\"HTTP\":80},{\"HTTPS\":443}]"
+    "alb.ingress.kubernetes.io/ssl-redirect": "443"
+    "alb.ingress.kubernetes.io/target-type": "ip"
+    "alb.ingress.kubernetes.io/healthcheck-port": *containerPort
+    "alb.ingress.kubernetes.io/healthcheck-path": "/health"
+    "alb.ingress.kubernetes.io/healthy-threshold-count": "3"
+    "alb.ingress.kubernetes.io/unhealthy-threshold-count": "5"
+  hosts:
+    - host: "openobserve.dev.starfort.io"
+      paths:
+        - path: /
+          pathType: Prefix
+
+affinity: {}
+nodeSelector:
+  "aim-intelligence.com/role": "db"
