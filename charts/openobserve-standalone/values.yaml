@@ -343,25 +343,14 @@ ingress:
   enabled: false
   className: "nginx"
   # NOTE: /metrics and /api/metrics endpoints are always blocked for public access when ingress is enabled
-  annotations:
-    cert-manager.io/issuer: letsencrypt
-    kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/enable-cors: "true"
+  annotations: {}
     # nginx.ingress.kubernetes.io/connection-proxy-header: keep-alive
     # nginx.ingress.kubernetes.io/proxy-connect-timeout: '600'
     # nginx.ingress.kubernetes.io/proxy-send-timeout: '600'
     # nginx.ingress.kubernetes.io/proxy-read-timeout: '600'
     # nginx.ingress.kubernetes.io/proxy-body-size: 32m
-  hosts:
-    - host: openobserve.example.com
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-    - secretName: openobserve.example.com
-      hosts:
-        - openobserve.example.com
-
+  hosts: []
+  tls: []
 # Gateway API configuration (Envoy Gateway)
 # Uses Envoy Gateway EnvoyPatchPolicy to block /metrics and /api/metrics endpoints with direct 403 response
 gateway:
@@ -489,13 +478,8 @@ zplane:
       # kubernetes.io/ingress.class: nginx
       # cert-manager.io/issuer: letsencrypt
       # kubernetes.io/tls-acme: true
-    hosts:
-      - host: chart-example.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls:
-      []
+    hosts: []
+    tls: []
       # - secretName: chart-example-tls
       #   hosts:
       #     - chart-example.local
@@ -506,7 +490,7 @@ probes:
   failureThreshold: 3
   path: /healthz
   sreagent:
-    enabled: true
+    enabled: false
     config:
       readinessProbe:
         httpGet:
@@ -554,7 +538,7 @@ enterprise:
     O2_RATE_LIMIT_RULE_REFRESH_INTERVAL: "10" # in seconds"
     # AI features - requires o2-sre-agent to be enabled
     # IMPORTANT: If O2_AI_ENABLED is "true", you MUST also set enterprise.sreagent.enabled to true
-    O2_AI_ENABLED: "false"
+    O2_AI_ENABLED: false
     O2_AGENT_URL: ""  # Leave empty to use default auto-generated URL
     O2_TOOL_API_URL: ""  # Leave empty to use default auto-generated URL
     # Service Graph features

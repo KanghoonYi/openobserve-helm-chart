@@ -6,7 +6,16 @@ persistence:
   size: 10Gi
   storageClass: "gp3-xfs"
 
-
+config:
+  ZO_APP_NAME: "openobserve"
+  ZO_CLUSTER_NAME: "o2"
+  ZO_INSTANCE_NAME: ""
+  ZO_NODE_ROLE: "all"
+  ZO_LOCAL_MODE: "true"
+  ZO_LOCAL_MODE_STORAGE: "disk"
+  ZO_HTTP_PORT: *containerPort
+  RUST_LOG: "warning"
+  RUST_BACKTRACE: "0"
 
 service:
   type: ClusterIP
@@ -26,8 +35,8 @@ ingress:
     "alb.ingress.kubernetes.io/listen-ports": "[{\"HTTP\":80},{\"HTTPS\":443}]"
     "alb.ingress.kubernetes.io/ssl-redirect": "443"
     "alb.ingress.kubernetes.io/target-type": "ip"
-    "alb.ingress.kubernetes.io/healthcheck-port": *containerPort
-    "alb.ingress.kubernetes.io/healthcheck-path": "/health"
+    "alb.ingress.kubernetes.io/healthcheck-port": "traffic-port"
+    "alb.ingress.kubernetes.io/healthcheck-path": "/healthz"
     "alb.ingress.kubernetes.io/healthy-threshold-count": "3"
     "alb.ingress.kubernetes.io/unhealthy-threshold-count": "5"
   hosts:
@@ -39,3 +48,9 @@ ingress:
 affinity: {}
 nodeSelector:
   "aim-intelligence.com/role": "db"
+
+enterprise:
+  enabled: true
+  parameters:
+    O2_AUDIT_ENABLED: "false"
+    O2_AUDIT_BATCH_SIZE: "500"
